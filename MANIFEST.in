@@ -1,0 +1,3 @@
+include src/langdive/data/isomappings/*.csv
+include src/langdive/data/isomappings/*.tsv
+include src/langdive/data/wordlength_results/*.tsv
