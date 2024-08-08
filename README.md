@@ -22,8 +22,57 @@ for install from testPyPI
 ```bash
    pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple langdive-test
 ```
-## Documentation
+## Processed Datasets
 
+There is several aready processed datasets with a sample_size of 10000. 
+
+They are given here in the following format: 
+name in the library - name of the dataset : number of languages
+
+- ud - Universal Dependencies (UD): 106 languages. [project's website](https://universaldependencies.org/)
+
+- bible - Bible 100: 102 languages. [project's website](https://github.com/christos-c/bible-corpus/tree/master)
+
+- mbert - mBERT:  97 languages. [project's website](https://github.com/google-research/bert/blob/master/multilingual.md) 
+
+- xtreme - XTREME:  40 languages. [project's website](https://sites.research.google/xtreme)
+
+- xglue -  XGLUE:  19 languages.   [project's website](https://microsoft.github.io/XGLUE/)
+
+- xnli - XNLI:  15 languages. [project's website](https://github.com/facebookresearch/XNLI)
+
+- xcopa - XCOPA:  11 languages. [project's website](https://github.com/cambridgeltl/xcopa)
+
+- tydiqa - TyDiQA: 11 languages. [project website](https://github.com/google-research-datasets/tydiqa)
+
+- xquad -  XQuAD:   12 languages. [project's website](https://github.com/deepmind/xquad)
+
+- teddi - TeDDi sample: 86  languages. [project's website]()
+
+
+## Usage/Examples
+
+
+```python
+from langdive import process_corpus
+from langdive import Langdive
+
+process_corpus("C:/Users/Name/corpus_name_folder" )
+
+lang = Langdive()
+jacc_mm = lang.jaccard_morphology("path_to_newly_processed_corpus", "teddi", True, True)
+```
+
+process_corpus will make folders for processing named after the folder of the corpus in the workspace folder (RESULTS_sample_size_name).
+
+lang = Langdive() creates the library class with the default arguments
+
+lang.jaccard_morphology will calculate the diversity index based on the word length features. The first argument is the stats.tsv file from the newly created RESULTS_sample_size_name, the second argument is the already processed TeDDi dataset from the library. Third and fourth argument represent that the values should be scaled and the plot should be shown.
+## API
+
+
+
+#### process_corpus
 
 ```
 process_corpus(path_to_input_corpus_folder,  start_sample_size = 10000, end_sample_size = 10000, step_size = 1)
@@ -43,10 +92,12 @@ Variables:
 *start_sample_size, end_sample_size, step_size* - defines processing in terms of how many words from each language file will be taken.
 Example: for values 1, 5, 1, there will be 5 result sets each with 1,2,3,4 and 5 words respectively
 
+#### process_file
+
 ```
 process_file(file_path, sample_size, output_file)
 ```
-Does the same thing for as process_corpus but for a single file.
+Does the same thing as process_corpus but for a single file.
 
 Variables:
 
@@ -56,41 +107,24 @@ Variables:
 
 *output_file* - name of the output file where the results will be stored, the freq folder will be in the same directory as the output file
 
-```
-Langdive
-```
+
+### Langdive
 
 The class for working with the processed datasets. 
 The constructor, methods and already processed datasets will be documented next.
 
 
+#### constructor
 ```
 Langdive(min = 1, max = 13, increment = 1, typological_index_binsize = 1)
 ```
+*min, max, increment* - controlling bin sizes in word length algorithms (will change the graphs too). Defaults are determined experimentally
+
+*typological_index_binsize* - controlling bin size for typological indexes. 
 
 
-There is several aready processed datasets with a sample_size of 10000. Format (name : number of languages : name in library)
-- Universal Dependencies (UD): 106 languages - ud. [project's website](https://universaldependencies.org/)
 
-- Bible 100: 102 languages - bible. [project's website](https://github.com/christos-c/bible-corpus/tree/master)
-
-- mBERT:  97 languages - mbert. [project's website](https://github.com/google-research/bert/blob/master/multilingual.md) 
-
-- XTREME:  40 languages - xtreme. [project's website](https://sites.research.google/xtreme)
-
-- XGLUE:  19 languages - xglue.   [project's website](https://microsoft.github.io/XGLUE/)
-
-- XNLI:  15 languages - xnli. [project's website](https://github.com/facebookresearch/XNLI)
-
-- XCOPA:  11 languages - xcopa. [project's website](https://github.com/cambridgeltl/xcopa)
-
-- TyDiQA: 11 languages - tydiqua. [project website](https://github.com/google-research-datasets/tydiqa)
-
-- XQuAD:   12 languages - xquad. [project's website](https://github.com/deepmind/xquad)
-
-- TeDDi sample: 86  languages - teddi. [project's website]()
-
-
+#### jaccard_morphology
 ```
 jaccard_morphology( dataset_path, reference_path, plot = True, scaled = False)
 ```
@@ -103,6 +137,8 @@ jaccard_morphology( dataset_path, reference_path, plot = True, scaled = False)
 
 Returns the Jaccard score calculated by comparing the distributions of the mean word length
 
+#### jaccard_syntax
+
 ```
 jaccard_syntax(dataset_path, reference_path, scaled = False)
 ```
@@ -111,13 +147,16 @@ jaccard_syntax(dataset_path, reference_path, scaled = False)
 *scaled* - boolean that determines whether or not the datasets will be scaled. Each dataset is normalized indepedently.
 
 Returns the Jaccard score calculated by using syntactic features available in lang2vec and the number of times each feature was observed in the dataset.
+#### typological_index_syntactic_features
 
 ```
 typological_index_syntactic_features(dataset_path)
 ```
-*dataset_path* - expects a csv file with pairs filename(in the dataset), ISO 639-9. One of the already processed datasets can be used 
+*dataset_path* - expects a csv file with pairs: filename (in the dataset), ISO 639-3. One of the already processed datasets can be used 
 
 Returns the typological index using the syntactic features (similarly to jaccard_syntax). The value ranges from 0 to 1 and values closer to 1 indicate higher diversity.
+
+#### typological_index_word_length
 
 ```
 typological_index_word_length(dataset_path)
@@ -125,40 +164,26 @@ typological_index_word_length(dataset_path)
 *dataset_path* - path to the dataset. One of the already processed datasets can be used 
 
 Returns the typological index adapted to use mean word length for calculations.
+
+#### get_l2v
 ```
 get_l2v(dataset_codes)
 ```
-*dataset_codes* - expects a csv file with pairs filename(in the dataset), ISO 639-9 
+*dataset_codes* - expects a csv file with pairs filename(in the dataset), ISO 639-3
 
 Returns the features extracted 
+
+#### get_dict
 
 ```
 get_dict(sourcedata)
 ```
 *sourcedata* - pandas dataframe of the processed dataset
 
-returns a pair of values dataframe with bins and a dictionary(region:number of languages) based on the sourcedata
-## Usage/Examples
-
-
-```python
-from langdive import process_corpus
-from langdive import Langdive
-
-process_corpus("C:/Users/Name/corpus_name_folder" )
-
-lang = Langdive()
-jacc_mm = lang.jaccard_morphology("path_to_newly_processed_corpus", "teddi", True, True)
-```
-
-process_corpus will make folders for processing named after the folder of the corpus in the workspace folder (RESULTS_sample_size_name).
-
-lang = Langdive() creates the library class with the default arguments
-
-lang.jaccard_morphology will calculate the diversity index based on the word length features. The first argument is the stats.tsv file from the newly created RESULTS_sample_size_name, the second argument is the already processed Teddi dataset from the library. Third and fourth argument represent that the values should be scaled and the plot should be shown.
+Returns a pair of values dataframe with bins and a dictionary(region:number of languages) based on the sourcedata
 ## Acknowledgements
 
- - [Polyglot ](https://github.com/aboSamoor/polyglot) Part of this project (polyglot_tokenizer file) has been taken from the polyglot project. The reason for this is difficulty with installation on Windows and MacOS
+ - [Polyglot ](https://github.com/aboSamoor/polyglot) Part of this project (polyglot_tokenizer file) has been taken from the polyglot project. The reason for this is difficulty with installation on Windows and MacOS. If the library gets updated, this file will be removed.
 
 
 
