@@ -32,25 +32,25 @@ class LangDive:
         else:
             path = path.lower()
             if path == 'teddi':
-                path = 'data\\wordlength_results\\sample10000.tsv'
+                path = 'data/wordlength_results/sample10000.tsv'
             elif path == 'xcopa':
-                path = 'data\\wordlength_results\\xcopa-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/xcopa-processed.10000.stats.tsv'
             elif path == 'xquad':
-                path = 'data\\wordlength_results\\xquad-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/xquad-processed.10000.stats.tsv'
             elif path == 'tydiqa':
-                path = 'data\\wordlength_results\\tydiqa-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/tydiqa-processed.10000.stats.tsv'
             elif path == 'xnli':
-                path = 'data\\wordlength_results\\xnli-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/xnli-processed.10000.stats.tsv'
             elif path == 'xtreme':
-                path = 'data\\wordlength_results\\xtreme-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/xtreme-processed.10000.stats.tsv'
             elif path == 'xglue':
-                path = 'data\\wordlength_results\\xglue-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/xglue-processed.10000.stats.tsv'
             elif path == 'mbert':
-                path = 'data\\wordlength_results\\mbertwiki-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/mbertwiki-processed.10000.stats.tsv'
             elif path == 'bible':
-                path = 'data\\wordlength_results\\biblecorpus100-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/biblecorpus100-processed.10000.stats.tsv'
             elif path == 'ud':
-                path = 'data\\wordlength_results\\ud-processed.10000.stats.tsv'
+                path = 'data/wordlength_results/ud-processed.10000.stats.tsv'
             
 
             current_dir = os.path.dirname(__file__)
@@ -69,56 +69,56 @@ class LangDive:
             current_dir = os.path.dirname(__file__)
             path = path.lower()
             if path == 'teddi':
-                path = 'data\\isomappings\\teddi500.csv'
+                path = 'data/isomappings/teddi500.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 return codes
             elif path == 'xcopa':
-                path = 'data\\isomappings\\xcopa-processed.10000.csv'
+                path = 'data/isomappings/xcopa-processed.10000.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 return codes
             elif path == 'xquad':
-                path = 'data\\isomappings\\xquad-processed.10000.csv'
+                path = 'data/isomappings/xquad-processed.10000.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 return codes
             elif path == 'tydiqa':
-                path = 'data\\isomappings\\tydiqa-processed.10000.csv'
+                path = 'data/isomappings/tydiqa-processed.10000.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 return codes
             elif path == 'xnli':
-                path = 'data\\isomappings\\xnli-processed.10000.csv'
+                path = 'data/isomappings/xnli-processed.10000.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 return codes
             elif path == 'xtreme':
-                path = 'data\\isomappings\\xtreme-processed.10000.csv'
+                path = 'data/isomappings/xtreme-processed.10000.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 return codes
             elif path == 'xglue':
-                path = 'data\\isomappings\\xglue-processed.10000.csv'
+                path = 'data/isomappings/xglue-processed.10000.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 return codes
             elif path == 'mbert':
-                path = 'data\\isomappings\\mbertwiki-processed.10000.csv'
+                path = 'data/isomappings/mbertwiki-processed.10000.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 codes.loc["armenian"].at["ISO_6393"] = "hy"
                 codes.loc["vowiki-latest-pages-articles"].at["ISO_6393"] = "vol"
                 return codes
             elif path == 'bible':
-                path = 'data\\isomappings\\biblecorpus100-processed.10000.csv'
+                path = 'data/isomappings/biblecorpus100-processed.10000.csv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, index_col = 0)
                 codes = codes.drop(["crp.txt"])
                 codes.loc["jap.txt"].at["ISO_6393"] = "jpn"
                 return codes
             elif path == 'ud':
-                path = 'data\\isomappings\\ud-processed.tsv'
+                path = 'data/isomappings/ud-processed.tsv'
                 path = os.path.join(current_dir,path)
                 codes = pd.read_csv(path, sep='\t', index_col=0)
                 codes.loc["UD_Western_Armenian-ArmTDP.txt"].at["ISO_6393"] = "hy"
@@ -133,7 +133,9 @@ class LangDive:
         
         if scaled:
             dataset_freqs, reference_freqs= self.__scaler(dataset_freqs, reference_freqs)
-        return self.__jaccard_index(dataset_freqs,reference_freqs)[0].item()
+        index = self.__jaccard_index(dataset_freqs,reference_freqs)[0].item()
+        print("Jaccard index: " + str(index))
+        return index
             
     def jaccard_morphology(self, dataset_path, reference_path, plot = True, scaled = False):
         dataset = self.__get_morphology_processed(dataset_path)
@@ -151,19 +153,25 @@ class LangDive:
             ref_name = self.__get_plot_name(reference_path)
             dataset_name = self.__get_plot_name(dataset_path)
             self.__draw_overlap_plot(df_ref_freq, df_data_freq, ref_name, dataset_name, ref_freq, data_freq)
-        return self.__jaccard_index(data_freq,ref_freq)[0].item()
+        index = self.__jaccard_index(data_freq,ref_freq)[0].item()
+        print("Jaccard index: " + str(index))
+        return index 
 
     def typological_index_syntactic_features(self, dataset_path):
         dataset = self.__get_syntax_processed(dataset_path)
         features = self.get_l2v(dataset)
         entropies = self.__get_entropy(features)
-        return mean(entropies)
+        typ_ind = mean(entropies)
+        print("Typological index: " + str(typ_ind))
+        return typ_ind
 
     def typological_index_word_length(self, dataset_path):
         dataset = self.__get_morphology_processed(dataset_path)
         word_length_features = self.__get_wordlength_vectors(dataset)
         entropies = self.__get_entropy(word_length_features)
-        return mean(entropies)
+        typ_ind = mean(entropies)
+        print("Typological index: " + str(typ_ind))
+        return typ_ind
 
     def __get_wordlength_vectors(self, dataset):
         #For each language initialize an array of elements (the maximum possoble word length in all lamguages)
@@ -223,7 +231,7 @@ class LangDive:
         if ".tsv" not in path:
             return path
         else:
-            name = path.split('\\')[-1]
+            name = path.split('/')[-1]
             return name[:-4]
     
     def __draw_overlap_plot(self, df_ref_freq, df_data_freq, reference_name, dataset_name, ref_feq, data_freq):

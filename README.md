@@ -1,7 +1,7 @@
 
-# Langdive
+# LangDive
 
-Langdive is a library for measuring the diversity score between different linguistic datasets. 
+LangDive is a library for measuring the diversity score between different linguistic datasets. 
 
 
 
@@ -11,17 +11,32 @@ Langdive is a library for measuring the diversity score between different lingui
 ## Installation
 
 
+*not on pypi yet so ignore this*
 ```bash
   pip install langdive 
 ```
-
-Windows: dependency on pyICU, corresponding wheels can be found at https://github.com/cgohlke/pyicu-build . Install the wheel locally and run the pip install afterwards
-
 
 for install from testPyPI
 ```bash
    pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple langdive-test
 ```
+
+### OS specific instructions
+
+This library has PyICU as one of its dependencies, installation instructions for it and any other necessary libraries during the testing phase will be added here.
+
+#### Windows
+
+You can find wheels for Windows for the pyICU [here](https://github.com/cgohlke/pyicu-build). Download the wheel for your python version and install it within your environment. Run the pip install afterwards.
+
+#### MAC OS
+
+#### Ubuntu
+
+PyICU installation instructions can be found [here](https://pypi.org/project/PyICU/)
+
+During the testing phase, for showing plots make sure to have PyQt6 installed.
+
 ## Processed Datasets
 
 There is several aready processed datasets with a sample_size of 10000. 
@@ -55,17 +70,17 @@ name in the library - name of the dataset : number of languages
 
 ```python
 from langdive import process_corpus
-from langdive import Langdive
+from langdive import LangDive
 
 process_corpus("C:/Users/Name/corpus_name_folder" )
 
-lang = Langdive()
+lang = LangDive()
 jacc_mm = lang.jaccard_morphology("path_to_newly_processed_corpus", "teddi", True, True)
 ```
 
 process_corpus will make folders for processing named after the folder of the corpus in the workspace folder (RESULTS_sample_size_name).
 
-lang = Langdive() creates the library class with the default arguments
+lang = LangDive() creates the library class with the default arguments
 
 lang.jaccard_morphology will calculate the diversity index based on the word length features. The first argument is the stats.tsv file from the newly created RESULTS_sample_size_name, the second argument is the already processed TeDDi dataset from the library. Third and fourth argument represent that the values should be scaled and the plot should be shown.
 ## API
@@ -108,7 +123,7 @@ Variables:
 *output_file* - name of the output file where the results will be stored, the freq folder will be in the same directory as the output file
 
 
-### Langdive
+### LangDive
 
 The class for working with the processed datasets. 
 The constructor, methods and already processed datasets will be documented next.
@@ -116,7 +131,7 @@ The constructor, methods and already processed datasets will be documented next.
 
 #### constructor
 ```
-Langdive(min = 1, max = 13, increment = 1, typological_index_binsize = 1)
+LangDive(min = 1, max = 13, increment = 1, typological_index_binsize = 1)
 ```
 *min, max, increment* - controlling bin sizes in word length algorithms (will change the graphs too). Defaults are determined experimentally
 

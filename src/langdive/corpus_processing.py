@@ -17,7 +17,7 @@ from segments import Tokenizer
 def process_corpus(path_to_input_corpus_folder,  start_sample_size = 10000, end_sample_size = 10000, step_size = 1):
 
     mode = "tokens" #TODO aleksandra: does it need to have both modes?
-    input_corpus = path_to_input_corpus_folder.split('\\')[-1]
+    input_corpus = path_to_input_corpus_folder.split('/')[-1]
     print(input_corpus)
     output_dir = f"RESULTS_{input_corpus}_{mode}"
     os.makedirs(output_dir, exist_ok=True)  # Create directory if it doesn't exist
@@ -112,10 +112,10 @@ def process_file(file_path, sample_size, output_file):
     char_types = len(char_freq)
     median = statistics.median(sizes)
 
-    filename = file_path.split("\\")[-1].split('.')[0]
-    index = output_file.rfind("\\")
+    filename = file_path.split("/")[-1].split('.')[0]
+    index = output_file.rfind("/")
     print(output_file[:index])
-    output_dir = output_file[:index] + '\\freqs\\'
+    output_dir = output_file[:index] + '/freqs/'
     results = get_measures(words, output_dir=output_dir, filename= filename + ".freqs.tsv")
     #print()  
     with open(output_file, 'a') as f:
