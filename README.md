@@ -29,7 +29,20 @@ This library has PyICU as one of its dependencies, installation instructions for
 
 You can find wheels for Windows for the pyICU [here](https://github.com/cgohlke/pyicu-build). Download the wheel for your python version and install it within your environment. Run the pip install afterwards.
 
-#### MAC OS
+#### MacOS
+
+The easiest way to set PyICU on a Mac is to first install [Homebrew](https://brew.sh/). Then, run the following commands:
+
+```
+# install libicu (keg-only)
+brew install pkg-config icu4c
+
+# let setup.py discover keg-only icu4c via pkg-config
+export PATH="/usr/local/opt/icu4c/bin:/usr/local/opt/icu4c/sbin:$PATH"
+export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/icu4c/lib/pkgconfig"
+```
+
+Finally, the PyICU package will be automatically installed by pip during the installation of langdive.
 
 #### Ubuntu
 
@@ -44,25 +57,25 @@ There is several aready processed datasets with a sample_size of 10000.
 They are given here in the following format: 
 name in the library - name of the dataset : number of languages
 
-- ud - Universal Dependencies (UD): 106 languages. [project's website](https://universaldependencies.org/)
+- ```ud``` - Universal Dependencies (UD): 106 languages. [project's website](https://universaldependencies.org/)
 
-- bible - Bible 100: 102 languages. [project's website](https://github.com/christos-c/bible-corpus/tree/master)
+- ```bible``` - Bible 100: 102 languages. [project's website](https://github.com/christos-c/bible-corpus/tree/master)
 
-- mbert - mBERT:  97 languages. [project's website](https://github.com/google-research/bert/blob/master/multilingual.md) 
+- ```mbert``` - mBERT:  97 languages. [project's website](https://github.com/google-research/bert/blob/master/multilingual.md) 
 
-- xtreme - XTREME:  40 languages. [project's website](https://sites.research.google/xtreme)
+- ```xtreme``` - XTREME:  40 languages. [project's website](https://sites.research.google/xtreme)
 
-- xglue -  XGLUE:  19 languages.   [project's website](https://microsoft.github.io/XGLUE/)
+- ```xglue``` -  XGLUE:  19 languages.   [project's website](https://microsoft.github.io/XGLUE/)
 
-- xnli - XNLI:  15 languages. [project's website](https://github.com/facebookresearch/XNLI)
+- ```xnli``` - XNLI:  15 languages. [project's website](https://github.com/facebookresearch/XNLI)
 
-- xcopa - XCOPA:  11 languages. [project's website](https://github.com/cambridgeltl/xcopa)
+- ```xcopa``` - XCOPA:  11 languages. [project's website](https://github.com/cambridgeltl/xcopa)
 
-- tydiqa - TyDiQA: 11 languages. [project website](https://github.com/google-research-datasets/tydiqa)
+- ```tydiqa``` - TyDiQA: 11 languages. [project website](https://github.com/google-research-datasets/tydiqa)
 
-- xquad -  XQuAD:   12 languages. [project's website](https://github.com/deepmind/xquad)
+- ```xquad``` -  XQuAD:   12 languages. [project's website](https://github.com/deepmind/xquad)
 
-- teddi - TeDDi sample: 86  languages. [project's website]()
+- ```teddi``` - TeDDi sample: 86  languages. [project's website]()
 
 
 ## Usage/Examples
@@ -102,9 +115,9 @@ The dataset name is the name of the final folder in the path to the corpus.
 
 Variables:
 
-*path_to_input_corpus_folder* - path to the input corpus. Doesn't have to be in the working directory.
+*```path_to_input_corpus_folder```* - path to the input corpus. Doesn't have to be in the working directory.
 
-*start_sample_size, end_sample_size, step_size* - defines processing in terms of how many words from each language file will be taken.
+*```start_sample_size, end_sample_size, step_size```* - defines processing in terms of how many words from each language file will be taken.
 Example: for values 1, 5, 1, there will be 5 result sets each with 1,2,3,4 and 5 words respectively
 
 #### process_file
@@ -116,11 +129,11 @@ Does the same thing as process_corpus but for a single file.
 
 Variables:
 
-*file_path* - path to the file to be processed
+*```file_path```* - path to the file to be processed
 
-*sample_size* - number of words to be taken 
+*```sample_size```* - number of words to be taken 
 
-*output_file* - name of the output file where the results will be stored, the freq folder will be in the same directory as the output file
+*```output_file```* - name of the output file where the results will be stored, the freq folder will be in the same directory as the output file
 
 
 ### LangDive
@@ -133,9 +146,9 @@ The constructor, methods and already processed datasets will be documented next.
 ```
 LangDive(min = 1, max = 13, increment = 1, typological_index_binsize = 1)
 ```
-*min, max, increment* - controlling bin sizes in word length algorithms (will change the graphs too). Defaults are determined experimentally
+*```min, max, increment```* - controlling bin sizes in word length algorithms (will change the graphs too). Defaults are determined experimentally
 
-*typological_index_binsize* - controlling bin size for typological indexes. 
+*```typological_index_binsize```* - controlling bin size for typological indexes. 
 
 
 
@@ -144,11 +157,11 @@ LangDive(min = 1, max = 13, increment = 1, typological_index_binsize = 1)
 jaccard_morphology( dataset_path, reference_path, plot = True, scaled = False)
 ```
 
-*dataset_path, reference_path* - path to the dataset.sample_size.stats.tsv file for analysis. One of the already processed datasets can be used by using its name in the library.
+*```dataset_path, reference_path```* - path to the dataset.sample_size.stats.tsv file for analysis. One of the already processed datasets can be used by using its name in the library.
 
-*plot* - boolean that determines whether a plot will be shown
+*```plot```* - boolean that determines whether a plot will be shown
 
-*scaled* - boolean that determines whether or not the datasets will be scaled. Each dataset is normalized indepedently.
+*```scaled```* - boolean that determines whether or not the datasets will be scaled. Each dataset is normalized indepedently.
 
 Returns the Jaccard score calculated by comparing the distributions of the mean word length
 
@@ -157,9 +170,9 @@ Returns the Jaccard score calculated by comparing the distributions of the mean 
 ```
 jaccard_syntax(dataset_path, reference_path, scaled = False)
 ```
-*dataset_path, reference_path* - path to the dataset file for analysis. One of the already processed datasets can be used by using its name in the library.
+*```dataset_path, reference_path```* - path to the dataset file for analysis. One of the already processed datasets can be used by using its name in the library.
 
-*scaled* - boolean that determines whether or not the datasets will be scaled. Each dataset is normalized indepedently.
+*```scaled```* - boolean that determines whether or not the datasets will be scaled. Each dataset is normalized indepedently.
 
 Returns the Jaccard score calculated by using syntactic features available in lang2vec and the number of times each feature was observed in the dataset.
 #### typological_index_syntactic_features
@@ -167,7 +180,7 @@ Returns the Jaccard score calculated by using syntactic features available in la
 ```
 typological_index_syntactic_features(dataset_path)
 ```
-*dataset_path* - expects a csv file with pairs: filename (in the dataset), ISO 639-3. One of the already processed datasets can be used 
+*```dataset_path```* - expects a csv file with pairs: filename (in the dataset), ISO 639-3. One of the already processed datasets can be used 
 
 Returns the typological index using the syntactic features (similarly to jaccard_syntax). The value ranges from 0 to 1 and values closer to 1 indicate higher diversity.
 
@@ -176,7 +189,7 @@ Returns the typological index using the syntactic features (similarly to jaccard
 ```
 typological_index_word_length(dataset_path)
 ```
-*dataset_path* - path to the dataset. One of the already processed datasets can be used 
+*```dataset_path```* - path to the dataset. One of the already processed datasets can be used 
 
 Returns the typological index adapted to use mean word length for calculations.
 
@@ -184,7 +197,7 @@ Returns the typological index adapted to use mean word length for calculations.
 ```
 get_l2v(dataset_codes)
 ```
-*dataset_codes* - expects a csv file with pairs filename(in the dataset), ISO 639-3
+*```dataset_codes```* - expects a csv file with pairs filename(in the dataset), ISO 639-3
 
 Returns the features extracted 
 
@@ -193,7 +206,7 @@ Returns the features extracted
 ```
 get_dict(sourcedata)
 ```
-*sourcedata* - pandas dataframe of the processed dataset
+*```sourcedata```* - pandas dataframe of the processed dataset
 
 Returns a pair of values dataframe with bins and a dictionary(region:number of languages) based on the sourcedata
 ## Acknowledgements
