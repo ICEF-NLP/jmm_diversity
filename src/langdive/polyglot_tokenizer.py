@@ -1,10 +1,7 @@
 from icu import Locale, BreakIterator
-
-
 import sys
 import six
 from six import text_type as unicode
-
 from functools import cached_property
 
 string_types = (str,)
@@ -461,4 +458,3 @@ class Sequence(object):
 
   def empty(self):
     return not self.text.strip()
-  

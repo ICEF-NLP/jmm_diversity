@@ -15,39 +15,30 @@ from segments import Tokenizer
 
 
 def process_corpus(path_to_input_corpus_folder,  start_sample_size = 10000, end_sample_size = 10000, step_size = 1):
-
     mode = "tokens" #TODO aleksandra: does it need to have both modes?
     input_corpus = path_to_input_corpus_folder.split('/')[-1]
     print(input_corpus)
     output_dir = f"RESULTS_{input_corpus}_{mode}"
-    os.makedirs(output_dir, exist_ok=True)  # Create directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True) 
 
     headers = ["File", "Avg_length", "Median_length", "Char_types", "Types", "Tokens", "TTR"]
 
     for sample_size in range(start_sample_size, end_sample_size + step_size, step_size):
-        # Create output file path
         output_file = os.path.join(output_dir, f"{input_corpus}.{sample_size}.stats.tsv")
-        # Write headers to output file
         with open(output_file, "w") as f:
-            f.write("\t".join(headers) + "\n")  # Write headers with tabs as separators
+            f.write("\t".join(headers) + "\n")
 
-        # Loop through files in the corpus directory
         for filename in os.listdir(path_to_input_corpus_folder):
             filepath = os.path.join(path_to_input_corpus_folder, filename)
 
-            # Print information about processing file
-            print(f"Processing {filename}")
+            print(f"Processing {filename}") #Information print
 
-            # Write filename to output file
             with open(output_file, "a") as f:
-                f.write(f"{filename}\t")  # Append filename with a tab
+                f.write(f"{filename}\t")
 
-            # Choose script based on mode (tokens or types)
             if mode == "tokens":
-                #print("Using measures_originaltextv2.py for tokens")
                 process_file(file_path= filepath, sample_size=sample_size,output_file = output_file)
-                #os.system(f"python3 measures_originaltextv2.py {filepath} {sample_size} >> {output_file}")  # Call script using os.system
-
+            #TODO: check if types is needed
             #elif mode == "types":
                 #print("Using measures_originaltext_types.py for types")
                 #os.system(f"python3 measures_originaltext_types.py {filepath} {sample_size} >> {output_file}")  # Call script using os.system
@@ -88,7 +79,6 @@ def process_file(file_path, sample_size, output_file):
         n = random.randint(0, max_number)
         strings_clean = strings_clean_aux[n : (n + sample_size)]
 		
-	
     words = Counter(strings_clean)
     types = len(set(strings_clean))
     tokens = len(strings_clean)
@@ -108,20 +98,19 @@ def process_file(file_path, sample_size, output_file):
                     char_freq[i] += 1
                 else:
                     char_freq[i] = 1
+
     avg = total / tokens
     char_types = len(char_freq)
     median = statistics.median(sizes)
 
     filename = file_path.split("/")[-1].split('.')[0]
     index = output_file.rfind("/")
-    print(output_file[:index])
+    print(output_file[:index]) 
     output_dir = output_file[:index] + '/freqs/'
     results = get_measures(words, output_dir=output_dir, filename= filename + ".freqs.tsv")
-    #print()  
     with open(output_file, 'a') as f:
         f.write(str(avg)+"\t"+str(median)+"\t"+str(char_types)+"\t"+str(types)+"\t"+str(tokens)+"\t"+str(ttr)+"\t"+str(results)+ "\n")
 
- 
 def get_measures(voc, output_dir, filename):
     freq = defaultdict(int)
     os.makedirs(output_dir, exist_ok=True)

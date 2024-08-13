@@ -88,7 +88,7 @@ from langdive import LangDive
 process_corpus("C:/Users/Name/corpus_name_folder" )
 
 lang = LangDive()
-jacc_mm = lang.jaccard_morphology("path_to_newly_processed_corpus", "teddi", True, True)
+lang.jaccard_morphology("path_to_newly_processed_corpus", "teddi", True, True)
 ```
 
 process_corpus will make folders for processing named after the folder of the corpus in the workspace folder (RESULTS_sample_size_name).
