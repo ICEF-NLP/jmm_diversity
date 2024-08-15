@@ -4,6 +4,7 @@ import seaborn as sb
 import matplotlib.pyplot as plt
 import lang2vec.lang2vec as l2v
 import os
+import sys
 from statistics import mean
 
 plt.rcParams['figure.figsize'] = [9, 6]
@@ -13,6 +14,7 @@ class LangDive:
     __max = 13
     __increment = 1
     __typ_ind_binsize = 1 
+    __l2v_syn_features = 103
     __processed_datasets = set(['teddi', 'xcopa', 'xquad', 'tydiqa', 'xnli', 'xtreme', 'xglue', 'mbert', 'bible', 'ud'])
     
     def __init__(self, min = 1, max = 13, increment = 1, typological_index_binsize = 1) -> None:
@@ -116,17 +118,25 @@ class LangDive:
                 codes.loc["UD_Western_Armenian-ArmTDP.txt"].at["ISO_6393"] = "hy"
                 return codes
         
-    def jaccard_syntax(self, dataset_path, reference_path, scaled = False):
+    def jaccard_syntax(self, dataset_path, reference_path, plot = True, scaled = False):
         dataset_codes = self.__get_syntax_processed(dataset_path)
         reference_codes = self.__get_syntax_processed(reference_path)
         
         dataset_freqs = self.get_l2v(dataset_codes).sum().to_dict()
         reference_freqs= self.get_l2v(reference_codes).sum().to_dict()
+        self.__l2v_syn_features = max(len(dataset_freqs), len(reference_freqs))
         
         if scaled:
             dataset_freqs, reference_freqs= self.__scaler(dataset_freqs, reference_freqs)
 
-        index = self.__jaccard_index(dataset_freqs,reference_freqs)[0].item()
+        if plot:
+            df_data_freq = pd.DataFrame.from_dict(dataset_freqs, orient='index')
+            df_ref_freq = pd.DataFrame.from_dict(reference_freqs, orient='index')
+            ref_name = self.__get_plot_name(reference_path)
+            dataset_name = self.__get_plot_name(dataset_path)
+            self.__draw_overlap_plot(df_ref_freq, df_data_freq, ref_name, dataset_name, reference_freqs, dataset_freqs, False)
+
+        index = self.__jaccard_index(dataset_freqs,reference_freqs)[0]
         return index
             
     def jaccard_morphology(self, dataset_path, reference_path, plot = True, scaled = False):
@@ -138,15 +148,15 @@ class LangDive:
         
         if scaled: 
             data_freq, ref_freq=self.__scaler(data_freq, ref_freq)
-            
+
         if plot:
-            df_data_freq=pd.DataFrame.from_dict(data_freq, orient='index')
-            df_ref_freq=pd.DataFrame.from_dict(ref_freq, orient='index')
+            df_data_freq = pd.DataFrame.from_dict(data_freq, orient='index')
+            df_ref_freq = pd.DataFrame.from_dict(ref_freq, orient='index')
             ref_name = self.__get_plot_name(reference_path)
             dataset_name = self.__get_plot_name(dataset_path)
-            self.__draw_overlap_plot(df_ref_freq, df_data_freq, ref_name, dataset_name, ref_freq, data_freq)
+            self.__draw_overlap_plot(df_ref_freq, df_data_freq, ref_name, dataset_name, ref_freq, data_freq, True)
 
-        index = self.__jaccard_index(data_freq,ref_freq)[0].item()
+        index = self.__jaccard_index(data_freq,ref_freq)[0]
         return index 
 
     def typological_index_syntactic_features(self, dataset_path):
@@ -210,16 +220,22 @@ class LangDive:
             name = path.split('/')[-1]
             return name[:-4]
     
-    def __draw_overlap_plot(self, df_ref_freq, df_data_freq, reference_name, dataset_name, ref_feq, data_freq):
+    def __draw_overlap_plot(self, df_ref_freq, df_data_freq, reference_name, dataset_name, ref_feq, data_freq, morphology_plot = True):
+        if morphology_plot:
+            increment = self.__increment
+            xlab_name = 'Mean word length'
+        else:
+            increment = 1
+            xlab_name = 'l2v features'
         df_ref_freq.columns = [reference_name]
         df_data_freq.columns = [dataset_name]
         col1 = df_ref_freq  
         col2 = df_data_freq 
         fig, ax = plt.subplots()
         ax2 = ax.twinx()
-        plot1 = col1.plot(kind = 'bar', ax = ax, width = self.__increment, align = "edge", alpha = 0.4, color = 'orange')
-        plot2 = col2.plot(kind = 'bar', ax = ax2, width = self.__increment, align = "edge", alpha = 0.5, color = 'palegreen')
-        positions, labels = self.__make_positions_and_labels()
+        plot1 = col1.plot(kind = 'bar', ax = ax, width = increment, align = "edge", alpha = 0.4, color = 'orange')
+        plot2 = col2.plot(kind = 'bar', ax = ax2, width = increment, align = "edge", alpha = 0.5, color = 'palegreen')
+        positions, labels = self.__make_positions_and_labels(morphology_plot)
 
         plt.setp(ax, xticks = positions, xticklabels = labels)
         ax.tick_params(labelrotation = 0, labelsize = 12)
@@ -228,26 +244,45 @@ class LangDive:
         ax2.legend([dataset_name], loc = ('upper left'), fontsize = 14)
 
         ax2.xaxis.set_visible(False)
-        ax.set_ylim(top = 50)
-        ax2.set_ylim(top = 50)
-        ax.set_xlabel('Mean word length', fontsize = 14)
+        if morphology_plot:
+            ax.set_ylim(top = 50)
+            ax2.set_ylim(top = 50)
+        else:
+            ax.set_ylim(top = 100)
+            ax2.set_ylim(top = 100)
+        ax.set_xlabel(xlab_name, fontsize = 14)
 
         jacc = self.__jaccard_index(ref_feq, data_freq)[0] 
         textstr= "J=" + str(round(jacc,3))
         plt.gcf().text(0.5, 0.8, textstr, fontsize = 14)
         plt.show() #TODO: aleksandra added for console testing
     
-    def __make_positions_and_labels(self):
+    def __make_positions_and_labels(self, morphology_plot):
+        if morphology_plot:
+            min = self.__min
+            increment = self.__increment
+            max = self.__max
+        else:
+            min = 1
+            increment = 1
+            max = self.__l2v_syn_features
+
         positions = [0]
-        i = self.__min
-        while i < self.__max:
+        i = min
+        while i < max:
             positions.append(i)
-            i = i + self.__increment
+            i = i + increment
         labels = []
-        i = self.__min
-        while i <= self.__max:
-            labels.append(i)
-            i = i + self.__increment            
+        i = min
+        while i <= max:
+            if morphology_plot:
+                labels.append(i)
+            else:
+                if i == 1 or i % 5 == 0 :
+                    labels.append(i)
+                else:
+                    labels.append('')
+            i = i + increment            
         return tuple(positions), tuple(labels)
 
     def __jaccard_index(self, data1, data2):
@@ -269,9 +304,22 @@ class LangDive:
                 else:
                     intersection[key] = data2[key]
                     intersectionvalues.append(intersection[key])
-        jaccard = np.array(intersectionvalues).sum() / np.array(unionvalues).sum()     
+
+        if len(intersectionvalues) == 0:
+            intersec = 0
+        else:
+            intersec = np.array(intersectionvalues).sum()
         
-        return(jaccard, union, intersection, unionvalues, intersectionvalues)
+        if len(unionvalues) == 0:
+            unionval = 0
+        else:
+            unionval = np.array(unionvalues).sum()
+
+        if unionval == 0:
+            unionval = sys.float_info.epsilon
+        jaccard = intersec / unionval    
+        
+        return (jaccard, union, intersection, unionvalues, intersectionvalues)
             
     def __scaler(self, dataset_freq, reference_freq):
         dataset_freq_num = np.array(list(dataset_freq.values())).sum() 
@@ -281,24 +329,30 @@ class LangDive:
         if (dataset_freq_num > reference_freq_num):
             max = dataset_freq_num
             min = reference_freq_num
-            c = max / min  
+            if min == 0:
+                c = max / sys.float_info.epsilon
+            else:
+                c = max / min
             for key in reference_freq:
                 scaled[key] = reference_freq[key] * c 
             return(dataset_freq,scaled)
         else:
             max = reference_freq_num
             min = dataset_freq_num
-            c = max / min
+            if min == 0:
+                c = max / sys.float_info.epsilon
+            else:
+                c = max / min
             for key in dataset_freq:
                 scaled[key] = dataset_freq[key] * c 
-            return(scaled,dataset_freq)
+            return (scaled,dataset_freq)
     
     def get_dict(self, sourcedata):
         bins = np.arange(self.__min, self.__max, self.__increment)
         data_regions = pd.DataFrame(columns=['Avg_length', 'Median_length', 'Char_types', 'Types','Tokens','TTR','H','region'])
         data_regions_freq = dict()
         for i in bins:
-            aux = pd.DataFrame(sourcedata.loc[(sourcedata['Avg_length']>i) & (sourcedata['Avg_length']<(i+self.__increment))])
+            aux = pd.DataFrame(sourcedata.loc[(sourcedata['Avg_length']>=i) & (sourcedata['Avg_length']<(i+self.__increment))])
             region = str(i) + "-" + str(i + self.__increment)
             data_regions_freq[region] = len(aux)
             aux['region'] = region

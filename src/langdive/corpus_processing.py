@@ -21,15 +21,15 @@ def process_corpus(path_to_input_corpus_folder,  start_sample_size = 10000, end_
     output_dir = f"RESULTS_{input_corpus}_{mode}"
     os.makedirs(output_dir, exist_ok=True) 
 
-    headers = ["File", "Avg_length", "Median_length", "Char_types", "Types", "Tokens", "TTR"]
+    headers = ["File", "Avg_length", "Median_length", "Char_types", "Types", "Tokens", "TTR", "H"]
 
     for sample_size in range(start_sample_size, end_sample_size + step_size, step_size):
-        output_file = os.path.join(output_dir, f"{input_corpus}.{sample_size}.stats.tsv")
+        output_file = os.path.join(output_dir, f"{input_corpus}.{sample_size}.stats.tsv").replace("\\","/")
         with open(output_file, "w") as f:
             f.write("\t".join(headers) + "\n")
 
         for filename in os.listdir(path_to_input_corpus_folder):
-            filepath = os.path.join(path_to_input_corpus_folder, filename)
+            filepath = os.path.join(path_to_input_corpus_folder, filename).replace("\\","/")
 
             print(f"Processing {filename}") #Information print
 
@@ -103,7 +103,7 @@ def process_file(file_path, sample_size, output_file):
     char_types = len(char_freq)
     median = statistics.median(sizes)
 
-    filename = file_path.split("/")[-1].split('.')[0]
+    filename = file_path.split("/")[-1]
     index = output_file.rfind("/")
     print(output_file[:index]) 
     output_dir = output_file[:index] + '/freqs/'

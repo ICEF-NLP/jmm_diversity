@@ -168,13 +168,15 @@ Returns the Jaccard score calculated by comparing the distributions of the mean 
 #### jaccard_syntax
 
 ```
-jaccard_syntax(dataset_path, reference_path, scaled = False)
+jaccard_syntax(dataset_path, reference_path, plot = True, scaled = False)
 ```
 *```dataset_path, reference_path```* - path to the dataset file for analysis. One of the already processed datasets can be used by using its name in the library.
 
+*```plot```* - boolean that determines whether a plot will be shown
+
 *```scaled```* - boolean that determines whether or not the datasets will be scaled. Each dataset is normalized indepedently.
 
-Returns the Jaccard score calculated by using syntactic features available in lang2vec and the number of times each feature was observed in the dataset.
+Returns the Jaccard score which is calculated by using: the syntactic features available in lang2vec and the number of times each feature was observed in the dataset.
 #### typological_index_syntactic_features
 
 ```
