@@ -25,7 +25,7 @@ class LangDive:
         
     def __get_morphology_processed(self, path):
         if path not in self.__processed_datasets: 
-            return pd.read_csv(path, sep = '\t', index_col = 0)
+            return pd.read_csv(path, sep = '\t')
         else:
             path = path.lower()
             if path == 'teddi':
@@ -51,79 +51,98 @@ class LangDive:
                 
             current_dir = os.path.dirname(__file__)
             path = os.path.join(current_dir,path)
-            return pd.read_csv(path, sep = '\t', index_col = 0)
+            return pd.read_csv(path, sep = '\t')
 
     def __get_syntax_processed(self, path):
         if path not in self.__processed_datasets: 
             if path[-3] =='c': #checking if tsv or csv
-                return pd.read_csv(path, index_col = 0)
+                return pd.read_csv(path)
             else:
-                return pd.read_csv(path, sep = '\t', index_col = 0)
+                return pd.read_csv(path, sep = '\t')
         else:
             current_dir = os.path.dirname(__file__)
             path = path.lower()
             if path == 'teddi':
                 path = 'data/isomappings/teddi500.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 return codes
             elif path == 'xcopa':
                 path = 'data/isomappings/xcopa-processed.10000.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 return codes
             elif path == 'xquad':
                 path = 'data/isomappings/xquad-processed.10000.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 return codes
             elif path == 'tydiqa':
                 path = 'data/isomappings/tydiqa-processed.10000.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 return codes
             elif path == 'xnli':
                 path = 'data/isomappings/xnli-processed.10000.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 return codes
             elif path == 'xtreme':
                 path = 'data/isomappings/xtreme-processed.10000.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 return codes
             elif path == 'xglue':
                 path = 'data/isomappings/xglue-processed.10000.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 return codes
             elif path == 'mbert':
                 path = 'data/isomappings/mbertwiki-processed.10000.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 codes.loc["armenian"].at["ISO_6393"] = "hy"
                 codes.loc["vowiki-latest-pages-articles"].at["ISO_6393"] = "vol"
                 return codes
             elif path == 'bible':
                 path = 'data/isomappings/biblecorpus100-processed.10000.csv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, index_col = 0)
+                codes = pd.read_csv(path)
                 codes = codes.drop(["crp.txt"])
                 codes.loc["jap.txt"].at["ISO_6393"] = "jpn"
                 return codes
             elif path == 'ud':
                 path = 'data/isomappings/ud-processed.tsv'
                 path = os.path.join(current_dir,path)
-                codes = pd.read_csv(path, sep='\t', index_col=0)
+                codes = pd.read_csv(path, sep='\t')
                 codes.loc["UD_Western_Armenian-ArmTDP.txt"].at["ISO_6393"] = "hy"
                 return codes
         
     def jaccard_syntax(self, dataset_path, reference_path, plot = True, scaled = False):
-        dataset_codes = self.__get_syntax_processed(dataset_path)
-        reference_codes = self.__get_syntax_processed(reference_path)
-        
-        dataset_freqs = self.get_l2v(dataset_codes).sum().to_dict()
-        reference_freqs= self.get_l2v(reference_codes).sum().to_dict()
+        dataset_name =  dataset_path.replace("\\","/").split("/")[-1]
+        reference_name = reference_path.replace("\\","/").split("/")[-1]
+
+        if "stats_iso" in dataset_name:
+            dataset_codes = self.__get_morphology_processed(dataset_path)
+            codes = dataset_codes["File"].str.lower().tolist()    
+            features = l2v.get_features(codes, "syntax_knn")
+            features_frame = pd.DataFrame.from_dict(features).transpose()
+            dataset_freqs = features_frame.sum().to_dict()
+
+        else:
+            dataset_codes = self.__get_syntax_processed(dataset_path)
+            dataset_freqs = self.get_l2v(dataset_codes).sum().to_dict()
+
+        if "stats_iso" in reference_name:
+            reference_codes = self.__get_morphology_processed(reference_path)
+            codes = reference_codes["File"].str.lower().tolist()    
+            features = l2v.get_features(codes, "syntax_knn")
+            features_frame = pd.DataFrame.from_dict(features).transpose()
+            reference_freqs = features_frame.sum().to_dict()
+        else:
+            reference_codes = self.__get_syntax_processed(reference_path)
+            reference_freqs= self.get_l2v(reference_codes).sum().to_dict()
+
         self.__l2v_syn_features = max(len(dataset_freqs), len(reference_freqs))
         
         if scaled:
@@ -187,7 +206,6 @@ class LangDive:
             vectors_hash[l]= binary_vector
         
         return(pd.DataFrame.from_dict(vectors_hash).transpose())
-
     
     def get_l2v(self, dataset_codes):
         #list of iso codes to query the l2v vectors:
@@ -315,9 +333,7 @@ class LangDive:
         else:
             unionval = np.array(unionvalues).sum()
 
-        if unionval == 0:
-            unionval = sys.float_info.epsilon
-        jaccard = intersec / unionval    
+        jaccard = float(intersec / unionval)
         
         return (jaccard, union, intersection, unionvalues, intersectionvalues)
             
@@ -329,27 +345,21 @@ class LangDive:
         if (dataset_freq_num > reference_freq_num):
             max = dataset_freq_num
             min = reference_freq_num
-            if min == 0:
-                c = max / sys.float_info.epsilon
-            else:
-                c = max / min
+            c = max / min
             for key in reference_freq:
                 scaled[key] = reference_freq[key] * c 
             return(dataset_freq,scaled)
         else:
             max = reference_freq_num
             min = dataset_freq_num
-            if min == 0:
-                c = max / sys.float_info.epsilon
-            else:
-                c = max / min
+            c = max / min
             for key in dataset_freq:
                 scaled[key] = dataset_freq[key] * c 
             return (scaled,dataset_freq)
     
     def get_dict(self, sourcedata):
         bins = np.arange(self.__min, self.__max, self.__increment)
-        data_regions = pd.DataFrame(columns=['Avg_length', 'Median_length', 'Char_types', 'Types','Tokens','TTR','H','region'])
+        data_regions = pd.DataFrame(columns=['File','Avg_length', 'Median_length', 'Char_types', 'Types','Tokens','TTR','H','region'])
         data_regions_freq = dict()
         for i in bins:
             aux = pd.DataFrame(sourcedata.loc[(sourcedata['Avg_length']>=i) & (sourcedata['Avg_length']<(i+self.__increment))])

@@ -14,17 +14,19 @@ from .polyglot_tokenizer import Text
 from segments import Tokenizer
 
 
-def process_corpus(path_to_input_corpus_folder,  start_sample_size = 10000, end_sample_size = 10000, step_size = 1):
-    mode = "tokens" #TODO aleksandra: does it need to have both modes?
+def process_corpus(path_to_input_corpus_folder, is_ISO6393 = False,  start_sample_size = 10000, end_sample_size = 10000, step_size = 1):
     input_corpus = path_to_input_corpus_folder.split('/')[-1]
     print(input_corpus)
-    output_dir = f"RESULTS_{input_corpus}_{mode}"
+    output_dir = f"RESULTS_{input_corpus}"
     os.makedirs(output_dir, exist_ok=True) 
-
+    if is_ISO6393:
+        stats = "stats_iso"
+    else:
+        stats = "stats"
     headers = ["File", "Avg_length", "Median_length", "Char_types", "Types", "Tokens", "TTR", "H"]
 
     for sample_size in range(start_sample_size, end_sample_size + step_size, step_size):
-        output_file = os.path.join(output_dir, f"{input_corpus}.{sample_size}.stats.tsv").replace("\\","/")
+        output_file = os.path.join(output_dir, f"{input_corpus}.{sample_size}.{stats}.tsv").replace("\\","/")
         with open(output_file, "w") as f:
             f.write("\t".join(headers) + "\n")
 
@@ -36,17 +38,12 @@ def process_corpus(path_to_input_corpus_folder,  start_sample_size = 10000, end_
             with open(output_file, "a") as f:
                 f.write(f"{filename}\t")
 
-            if mode == "tokens":
-                process_file(file_path= filepath, sample_size=sample_size,output_file = output_file)
-            #TODO: check if types is needed
-            #elif mode == "types":
-                #print("Using measures_originaltext_types.py for types")
-                #os.system(f"python3 measures_originaltext_types.py {filepath} {sample_size} >> {output_file}")  # Call script using os.system
+            process_file(file_path= filepath, sample_size=sample_size,output_file = output_file, is_ISO6393 = is_ISO6393)
 
     print("DONE. See results in", output_dir)
 
 
-def process_file(file_path, sample_size, output_file):
+def process_file(file_path, sample_size, output_file, is_ISO6393):
     text_file = open(file_path, 'r', encoding="utf-8")
     sample_text = text_file.read()
 	
@@ -104,6 +101,8 @@ def process_file(file_path, sample_size, output_file):
     median = statistics.median(sizes)
 
     filename = file_path.split("/")[-1]
+    if is_ISO6393:
+        filename = filename.split(".")[0]
     index = output_file.rfind("/")
     print(output_file[:index]) 
     output_dir = output_file[:index] + '/freqs/'

@@ -103,7 +103,7 @@ lang.jaccard_morphology will calculate the diversity index based on the word len
 #### process_corpus
 
 ```
-process_corpus(path_to_input_corpus_folder,  start_sample_size = 10000, end_sample_size = 10000, step_size = 1)
+process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, start_sample_size = 10000, end_sample_size = 10000, step_size = 1)
 ```
 Creates a results folder with the processed dataset.
 
@@ -117,13 +117,15 @@ Variables:
 
 *```path_to_input_corpus_folder```* - path to the input corpus. Doesn't have to be in the working directory.
 
+*```is_ISO6393```* - whether the names of the files in the dataset correspond to the ISO6393 language standard
+
 *```start_sample_size, end_sample_size, step_size```* - defines processing in terms of how many words from each language file will be taken.
 Example: for values 1, 5, 1, there will be 5 result sets each with 1,2,3,4 and 5 words respectively
 
 #### process_file
 
 ```
-process_file(file_path, sample_size, output_file)
+process_file(file_path, sample_size, output_file,is_ISO6393)
 ```
 Does the same thing as process_corpus but for a single file.
 
@@ -134,6 +136,8 @@ Variables:
 *```sample_size```* - number of words to be taken 
 
 *```output_file```* - name of the output file where the results will be stored, the freq folder will be in the same directory as the output file
+
+*```is_ISO6393```* - whether the name of the file corresponds to the ISO6393 code of the language
 
 
 ### LangDive
