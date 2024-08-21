@@ -101,7 +101,7 @@ The created folder "RESULTS_corpus_folder_name" will be placed in chosen output 
 
 *```is_ISO6393```* - boolean indicating whether the names of the input corpus files (without the file extension) correspond to the ISO-6393 language code standard
 
-*```start_sample_size, end_sample_size, step_size```* - defines the size of the text sample to be taken from each language file, measured in tokens. Each sample represents a contiguous section of text, with a randomly chosen starting point, containing the selected number of tokens. For example, for values 10000, 30000, 10000, there will be 3 result sets: one using samples of 10000 tokens per corpus file, one using samples of 20000 tokens per corpus file, and one using samples of 30000 tokens per corpus file.*
+*```start_sample_size, end_sample_size, step_size```* - defines the size of the text sample to be taken from each language file, measured in tokens. Each sample represents a contiguous section of text, with a randomly chosen starting point, containing the selected number of tokens. For example, for values 10000, 30000, 10000, there will be 3 result sets: one using samples of 10000 tokens per corpus file, one using samples of 20000 tokens per corpus file, and one using samples of 30000 tokens per corpus file.
 
 #### process_file
 
