@@ -135,61 +135,67 @@ LangDive(min = 1, max = 13, increment = 1, typological_index_binsize = 1)
 jaccard_morphology(dataset_path, reference_path, plot = True, scaled = False)
 ```
 
+Returns the Jaccard score calculated by comparing the distributions of the mean word length between the given and the reference dataset.
+
 *```dataset_path, reference_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
 *```plot```* - boolean that determines whether a plot will be shown
 
 *```scaled```* - boolean that determines whether the datasets should be scaled. Each dataset is normalized indepedently.
-
-Returns the Jaccard score calculated by comparing the distributions of the mean word length between the given and the reference dataset.
 
 #### jaccard_syntax
 
 ```
 jaccard_syntax(dataset_path, reference_path, plot = True, scaled = False)
 ```
+
+Returns the Jaccard score calculated by comparing the values of 103 syntactic features from lang2vec between the given and the reference dataset.
+
 *```dataset_path, reference_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
 *```plot```* - boolean that determines whether a plot will be shown
 
 *```scaled```* - boolean that determines whether the datasets should be scaled. Each dataset is normalized indepedently.
 
-Returns the Jaccard score calculated by comparing the values of 103 syntactic features from lang2vec between the given and the reference dataset.
-
 #### typological_index_syntactic_features
 
 ```
 typological_index_syntactic_features(dataset_path)
 ```
-*```dataset_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
 Returns the typological index that uses the 103 syntactic features from lang2vec. The value ranges from 0 to 1 and values closer to 1 indicate higher diversity.
+
+*```dataset_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
 #### typological_index_word_length
 
 ```
 typological_index_word_length(dataset_path)
 ```
-*```dataset_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
 Returns the typological index adapted to use mean word length for calculations.
 
+*```dataset_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
+
 #### get_l2v
+
 ```
 get_l2v(dataset_codes)
 ```
-*```dataset_codes```* - absolute or relative path to the processed corpus TSV file, containing the ISO-6393 language codes for each corpus file. If these codes were not created within the process_corpus/process_file functions, an error will be generated.
 
 Returns the values of 103 syntactic features from lang2vec for the given set of languages.
+
+*```dataset_codes```* - absolute or relative path to the processed corpus TSV file, containing the ISO-6393 language codes for each corpus file. If these codes were not created within the process_corpus/process_file functions, an error will be generated.
 
 #### get_dict
 
 ```
 get_dict(sourcedata)
 ```
-*```sourcedata```* - pandas dataframe of the processed dataset
 
 Returns a pair of values dataframe with bins and a dictionary(region:number of languages) based on the sourcedata
+
+*```sourcedata```* - pandas dataframe of the processed dataset
 
 ## Acknowledgements
 
