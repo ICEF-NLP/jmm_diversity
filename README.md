@@ -66,7 +66,7 @@ They are listed here in the following format:
 
 - ```teddi``` - **[TeDDi sample](https://github.com/MorphDiv/TeDDi_sample)**: 86  languages
 
-## Usage Examples
+## Usage Example
 
 ```python
 from langdive import process_corpus
