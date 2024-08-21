@@ -1,33 +1,22 @@
-
 # LangDive
 
-LangDive is a library for measuring the diversity score between different linguistic datasets. 
+LangDive is a PyPi-hosted library for measuring the level of linguistic diversity in multilingual NLP datasets.
 
-
-
-**Repository for the article [A Measure for Transparent Comparison of Linguistic Diversity in Multilingual NLP Data Sets](https://arxiv.org/abs/2403.03909) (Findings of NAACL 2024)**
-
+The measures implemented here have been proposed and described in the following NAACL 2024 paper: **[A Measure for Transparent Comparison of Linguistic Diversity in Multilingual NLP Data Sets](https://aclanthology.org/2024.findings-naacl.213.pdf)**
 
 ## Installation
 
-
-*not on pypi yet so ignore this*
 ```bash
   pip install langdive 
 ```
 
-for install from testPyPI
-```bash
-   pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple langdive-test
-```
-
 ### OS specific instructions
 
-This library has PyICU as one of its dependencies, installation instructions for it and any other necessary libraries during the testing phase will be added here.
+This library has PyICU as one of its dependencies, and its installation procedure is OS-specific.
 
 #### Windows
 
-You can find wheels for Windows for the pyICU [here](https://github.com/cgohlke/pyicu-build). Download the wheel for your python version and install it within your environment. Run the pip install afterwards.
+You can find wheels for Windows for the PyICU [here](https://github.com/cgohlke/pyicu-build). Download the wheel for your Python version and install it within your environment. Run the pip install afterwards.
 
 #### MacOS
 
@@ -48,154 +37,140 @@ Finally, the PyICU package will be automatically installed by pip during the ins
 
 PyICU installation instructions can be found [here](https://pypi.org/project/PyICU/)
 
-During the testing phase, for showing plots make sure to have PyQt6 installed.
+In addition, make sure to have PyQt6 installed to ensure proper functioning of plots.
 
-## Processed Datasets
+## Included Datasets
 
-There is several aready processed datasets with a sample_size of 10000. 
+The library includes several datasets that have already been processed with a sample_size of 10000. 
 
-They are given here in the following format: 
-name in the library - name of the dataset : number of languages
+They are listed here in the following format: 
+```library_id``` - **name of the dataset** : number of languages
 
-- ```ud``` - Universal Dependencies (UD): 106 languages. [project's website](https://universaldependencies.org/)
+- ```ud``` - **[Universal Dependencies (UD)](https://universaldependencies.org/)**: 106 languages
 
-- ```bible``` - Bible 100: 102 languages. [project's website](https://github.com/christos-c/bible-corpus/tree/master)
+- ```bible``` - **[Bible 100](https://github.com/christos-c/bible-corpus/tree/master)**: 102 languages
 
-- ```mbert``` - mBERT:  97 languages. [project's website](https://github.com/google-research/bert/blob/master/multilingual.md) 
+- ```mbert``` - **[mBERT](https://github.com/google-research/bert/blob/master/multilingual.md)**: 97 languages
 
-- ```xtreme``` - XTREME:  40 languages. [project's website](https://sites.research.google/xtreme)
+- ```xtreme``` - **[XTREME](https://sites.research.google/xtreme)**: 40 languages
 
-- ```xglue``` -  XGLUE:  19 languages.   [project's website](https://microsoft.github.io/XGLUE/)
+- ```xglue``` -  **[XGLUE](https://microsoft.github.io/XGLUE/)**: 19 languages
 
-- ```xnli``` - XNLI:  15 languages. [project's website](https://github.com/facebookresearch/XNLI)
+- ```xnli``` - **[XNLI](https://github.com/facebookresearch/XNLI)**: 15 languages
 
-- ```xcopa``` - XCOPA:  11 languages. [project's website](https://github.com/cambridgeltl/xcopa)
+- ```xcopa``` - **[XCOPA](https://github.com/cambridgeltl/xcopa)**: 11 languages
 
-- ```tydiqa``` - TyDiQA: 11 languages. [project website](https://github.com/google-research-datasets/tydiqa)
+- ```tydiqa``` - **[TyDiQA](https://github.com/google-research-datasets/tydiqa)**: 11 languages
 
-- ```xquad``` -  XQuAD:   12 languages. [project's website](https://github.com/deepmind/xquad)
+- ```xquad``` -  **[XQuAD](https://github.com/deepmind/xquad)**: 12 languages
 
-- ```teddi``` - TeDDi sample: 86  languages. [project's website]()
+- ```teddi``` - **[TeDDi sample](https://github.com/MorphDiv/TeDDi_sample)**: 86  languages
 
-
-## Usage/Examples
-
+## Usage Examples
 
 ```python
 from langdive import process_corpus
 from langdive import LangDive
 
-process_corpus("C:/Users/Name/corpus_name_folder" )
+process_corpus("C:/Users/Name/corpus_folder_name" )
 
 lang = LangDive()
-lang.jaccard_morphology("path_to_newly_processed_corpus", "teddi", True, True)
+lang.jaccard_morphology("./RESULTS_corpus_folder_name/corpus_folder_name.10000.stats.tsv", "teddi", plot=True, scaled=True)
 ```
 
-process_corpus will make folders for processing named after the folder of the corpus in the workspace folder (RESULTS_sample_size_name).
+In this example, the provided corpus files are first processed to calculate the measurements and statistics necessary for other library functions.
 
-lang = LangDive() creates the library class with the default arguments
+Afterwards, the library class is instantiated with the default arguments.
 
-lang.jaccard_morphology will calculate the diversity index based on the word length features. The first argument is the stats.tsv file from the newly created RESULTS_sample_size_name, the second argument is the already processed TeDDi dataset from the library. Third and fourth argument represent that the values should be scaled and the plot should be shown.
+Finally, the Jaccard similarity index is calculated by comparing the distributions of the mean word length between the newly processed corpus and the selected built-in reference corpus (TeDDi). This calculation is performed using scaled values, and both distributions are also shown side-by-side on a plot. 
+
 ## API
-
-
 
 #### process_corpus
 
 ```
-process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, start_sample_size = 10000, end_sample_size = 10000, step_size = 1)
+process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, output_dir = "default", start_sample_size = 10000, end_sample_size = 10000, step_size = 1)
 ```
-Creates a results folder with the processed dataset.
+Creates a results folder containing various measurements and statistics calculated based on the provided input corpus. The input corpus folder should contain textual files encoded in UTF-8. If the user wishes to utilize all functions of this library, it is necessary to ensure all corpus file names (without the file extension) are equal to their respective ISO-6393 language codes, and that the *is_ISO6393* argument is set to True. If these conditions are not met, only the measures based on mean word length can be used, while those relying on syntactic features will report an error.
 
-The folder titled RESULTS_corpus_folder_name_tokens will be in the working directory with a subfolder titled freqs and a file titled dataset_sample_size.stats.tsv. The file mentioned contains measures for each file in a new line. The folder freqs contains files titled filename.freqs.tsv for each file in the corpus with a pair word frequency in the file in each line.
+The created folder "RESULTS_corpus_folder_name" will be placed in chosen output directory with a subfolder "freqs" and one or more "corpus_folder_name.sample_size.stats.tsv" files. These files contain various measures for each corpus file, one line per file. Their number depends on the number of different sampling size settings, as defined by the final three function arguments. The "freqs" subfolder contains a word frequency count file for each file in the corpus folder, calculated using the final sampling size setting.
 
-Input notes:
+*```path_to_input_corpus_folder```* - absolute or relative path to the input corpus folder
 
-The dataset name is the name of the final folder in the path to the corpus. 
+*```output_dir```* - absolute or relative path to the output folder. The default setting will place the outputs in the current working directory.
 
-Variables:
+*```is_ISO6393```* - boolean indicating whether the names of the input corpus files (without the file extension) correspond to the ISO-6393 language code standard
 
-*```path_to_input_corpus_folder```* - path to the input corpus. Doesn't have to be in the working directory.
-
-*```is_ISO6393```* - whether the names of the files in the dataset correspond to the ISO6393 language standard
-
-*```start_sample_size, end_sample_size, step_size```* - defines processing in terms of how many words from each language file will be taken.
-Example: for values 1, 5, 1, there will be 5 result sets each with 1,2,3,4 and 5 words respectively
+*```start_sample_size, end_sample_size, step_size```* - defines the size of the text sample to be taken from each language file, measured in tokens. Each sample represents a contiguous section of text, with a randomly chosen starting point, containing the selected number of tokens. For example, for values 10000, 30000, 10000, there will be 3 result sets: one using samples of 10000 tokens per corpus file, one using samples of 20000 tokens per corpus file, and one using samples of 30000 tokens per corpus file.*
 
 #### process_file
 
 ```
-process_file(file_path, sample_size, output_file,is_ISO6393)
+process_file(file_path, sample_size, output_file, is_ISO6393)
 ```
 Does the same thing as process_corpus but for a single file.
 
-Variables:
+*```file_path```* - absolute or relative path to the input corpus file
 
-*```file_path```* - path to the file to be processed
+*```sample_size```* - the size of the text sample to be taken, measured in tokens
 
-*```sample_size```* - number of words to be taken 
+*```output_file```* - absolute or relative path to the output file where the results will be stored; the freq folder will be placed in the same directory as the output file
 
-*```output_file```* - name of the output file where the results will be stored, the freq folder will be in the same directory as the output file
-
-*```is_ISO6393```* - whether the name of the file corresponds to the ISO6393 code of the language
-
+*```is_ISO6393```* - boolean indicating whether the name of the input corpus file (without the file extension) corresponds to the ISO6393 language code standard
 
 ### LangDive
 
 The class for working with the processed datasets. 
-The constructor, methods and already processed datasets will be documented next.
-
 
 #### constructor
 ```
 LangDive(min = 1, max = 13, increment = 1, typological_index_binsize = 1)
 ```
-*```min, max, increment```* - controlling bin sizes in word length algorithms (will change the graphs too). Defaults are determined experimentally
+*```min, max, increment```* - controls the bin sizes to be used in the Jaccard measure based on mean word length (will also affect the result plots). The stated default values have been determined experimentally.
 
-*```typological_index_binsize```* - controlling bin size for typological indexes. 
-
-
+*```typological_index_binsize```* - controls the bin size for the typological indexes
 
 #### jaccard_morphology
 ```
-jaccard_morphology( dataset_path, reference_path, plot = True, scaled = False)
+jaccard_morphology(dataset_path, reference_path, plot = True, scaled = False)
 ```
 
-*```dataset_path, reference_path```* - path to the dataset.sample_size.stats.tsv file for analysis. One of the already processed datasets can be used by using its name in the library.
+*```dataset_path, reference_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
 *```plot```* - boolean that determines whether a plot will be shown
 
-*```scaled```* - boolean that determines whether or not the datasets will be scaled. Each dataset is normalized indepedently.
+*```scaled```* - boolean that determines whether the datasets should be scaled. Each dataset is normalized indepedently.
 
-Returns the Jaccard score calculated by comparing the distributions of the mean word length
+Returns the Jaccard score calculated by comparing the distributions of the mean word length between the given and the reference dataset.
 
 #### jaccard_syntax
 
 ```
 jaccard_syntax(dataset_path, reference_path, plot = True, scaled = False)
 ```
-*```dataset_path, reference_path```* - path to the dataset file for analysis. One of the already processed datasets can be used by using its name in the library.
+*```dataset_path, reference_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
 *```plot```* - boolean that determines whether a plot will be shown
 
-*```scaled```* - boolean that determines whether or not the datasets will be scaled. Each dataset is normalized indepedently.
+*```scaled```* - boolean that determines whether the datasets should be scaled. Each dataset is normalized indepedently.
 
-Returns the Jaccard score which is calculated by using: the syntactic features available in lang2vec and the number of times each feature was observed in the dataset.
+Returns the Jaccard score calculated by comparing the values of 103 syntactic features from lang2vec between the given and the reference dataset.
+
 #### typological_index_syntactic_features
 
 ```
 typological_index_syntactic_features(dataset_path)
 ```
-*```dataset_path```* - expects a csv file with pairs: filename (in the dataset), ISO 639-3. One of the already processed datasets can be used 
+*```dataset_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
-Returns the typological index using the syntactic features (similarly to jaccard_syntax). The value ranges from 0 to 1 and values closer to 1 indicate higher diversity.
+Returns the typological index that uses the 103 syntactic features from lang2vec. The value ranges from 0 to 1 and values closer to 1 indicate higher diversity.
 
 #### typological_index_word_length
 
 ```
 typological_index_word_length(dataset_path)
 ```
-*```dataset_path```* - path to the dataset. One of the already processed datasets can be used 
+*```dataset_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
 
 Returns the typological index adapted to use mean word length for calculations.
 
@@ -203,9 +178,9 @@ Returns the typological index adapted to use mean word length for calculations.
 ```
 get_l2v(dataset_codes)
 ```
-*```dataset_codes```* - expects a csv file with pairs filename(in the dataset), ISO 639-3
+*```dataset_codes```* - absolute or relative path to the processed corpus TSV file, containing the ISO-6393 language codes for each corpus file. If these codes were not created within the process_corpus/process_file functions, an error will be generated.
 
-Returns the features extracted 
+Returns the values of 103 syntactic features from lang2vec for the given set of languages.
 
 #### get_dict
 
@@ -215,11 +190,10 @@ get_dict(sourcedata)
 *```sourcedata```* - pandas dataframe of the processed dataset
 
 Returns a pair of values dataframe with bins and a dictionary(region:number of languages) based on the sourcedata
+
 ## Acknowledgements
 
- - [Polyglot ](https://github.com/aboSamoor/polyglot) Part of this project (polyglot_tokenizer file) has been taken from the polyglot project. The reason for this is difficulty with installation on Windows and MacOS. If the library gets updated, this file will be removed.
-
-
+ - [Polyglot](https://github.com/aboSamoor/polyglot) - A part of the *langdive* library (the polyglot_tokenizer file) has been taken from the Polyglot project. The reason for this is difficulty with installation on Windows and MacOS. If the library gets updated, this file will be removed.
 
 ## License
 
