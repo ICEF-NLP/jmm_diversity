@@ -10,19 +10,21 @@ include-package-data = true
 where = ["src"]
 
 [project]
-name = "langdive_test"
-version = "0.0.18"
+name = "langdive"
+version = "1.0"
 authors = [
-  { name="Example Author", email="author@example.com" },
+  { name="Aleksandra Todorović", email="aleksandra.todorovic@ic.etf.bg.ac.rs" },
+  { name="Vuk Batanović", email="vuk.batanovic@ic.etf.bg.ac.rs" },
+  { name="Tanja Samardžić", email="tanja.samardzic@uzh.ch" },
 ]
-description = "A small example package"
+description = "LangDive is a library for measuring the level of linguistic diversity in multilingual NLP datasets"
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
     'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-    'Development Status :: 3 - Alpha'
+    'Development Status :: 5 - Production/Stable'
 ]
 dependencies = [
     'setuptools>=72.1.0',
@@ -36,6 +38,6 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/MorphDiv/jmm_diversity"
+Homepage = "https://github.com/ICEF-NLP/jmm_diversity/tree/langdive-lib"
 
 
