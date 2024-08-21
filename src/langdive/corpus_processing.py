@@ -14,10 +14,15 @@ from .polyglot_tokenizer import Text
 from segments import Tokenizer
 
 
-def process_corpus(path_to_input_corpus_folder, is_ISO6393 = False,  start_sample_size = 10000, end_sample_size = 10000, step_size = 1):
+def process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, output_dir = "default", start_sample_size = 10000, end_sample_size = 10000, step_size = 1):
     input_corpus = path_to_input_corpus_folder.split('/')[-1]
     print(input_corpus)
-    output_dir = f"RESULTS_{input_corpus}"
+    
+    if output_dir == "default":
+        output_dir =f"RESULTS_{input_corpus}"
+    else:
+        output_dir_str = f"/RESULTS_{input_corpus}"
+        output_dir = output_dir.replace("\\","/",) + output_dir_str
     os.makedirs(output_dir, exist_ok=True) 
     if is_ISO6393:
         stats = "stats_iso"
@@ -34,9 +39,6 @@ def process_corpus(path_to_input_corpus_folder, is_ISO6393 = False,  start_sampl
             filepath = os.path.join(path_to_input_corpus_folder, filename).replace("\\","/")
 
             print(f"Processing {filename}") #Information print
-
-            with open(output_file, "a") as f:
-                f.write(f"{filename}\t")
 
             process_file(file_path= filepath, sample_size=sample_size,output_file = output_file, is_ISO6393 = is_ISO6393)
 
@@ -108,7 +110,7 @@ def process_file(file_path, sample_size, output_file, is_ISO6393):
     output_dir = output_file[:index] + '/freqs/'
     results = get_measures(words, output_dir=output_dir, filename= filename + ".freqs.tsv")
     with open(output_file, 'a') as f:
-        f.write(str(avg)+"\t"+str(median)+"\t"+str(char_types)+"\t"+str(types)+"\t"+str(tokens)+"\t"+str(ttr)+"\t"+str(results)+ "\n")
+        f.write(str(filename) + "\t" + str(avg)+"\t"+str(median)+"\t"+str(char_types)+"\t"+str(types)+"\t"+str(tokens)+"\t"+str(ttr)+"\t"+str(results)+ "\n")
 
 def get_measures(voc, output_dir, filename):
     freq = defaultdict(int)

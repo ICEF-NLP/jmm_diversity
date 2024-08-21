@@ -179,9 +179,18 @@ class LangDive:
         return index 
 
     def typological_index_syntactic_features(self, dataset_path):
-        dataset = self.__get_syntax_processed(dataset_path)
-        features = self.get_l2v(dataset)
-        entropies = self.__get_entropy(features)
+        dataset_name =  dataset_path.replace("\\","/").split("/")[-1]
+
+        if "stats_iso" in dataset_name:
+            dataset_codes = self.__get_morphology_processed(dataset_path)
+            codes = dataset_codes["File"].str.lower().tolist()    
+            features = l2v.get_features(codes, "syntax_knn")
+            features_frame = pd.DataFrame.from_dict(features).transpose()
+        else:
+            dataset_codes = self.__get_syntax_processed(dataset_path)
+            features_frame = self.get_l2v(dataset_codes)
+    
+        entropies = self.__get_entropy(features_frame)
         typ_ind = mean(entropies)
         return typ_ind
 
