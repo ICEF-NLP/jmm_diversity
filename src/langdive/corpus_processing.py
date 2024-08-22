@@ -78,6 +78,11 @@ def process_file(file_path,  is_ISO6393, output_file, sample_size=10000) :
     index = output_file.rfind("/")
     output_dir = output_file[:index] + '/freqs/'
     entropy = get_measures(words, output_dir=output_dir, filename= filename + ".freqs.tsv")
+    
+    if not os.path.isfile(output_file):
+        with open(output_file, 'a') as f:
+            headers = ["File", "Avg_length", "Median_length", "Char_types", "Types", "Tokens", "TTR", "H", "ISO_6393"]
+            f.write("\t".join(headers) + "\n")
 
     with open(output_file, 'a') as f:
         f.write(str(filename) + "\t" + str(avg)+"\t"+str(median)+"\t"+str(char_types)+"\t"+str(types)+"\t"+str(tokens)+"\t"+str(ttr)+"\t"+str(entropy)+ "\t" + str(ISO_6393) +"\n")

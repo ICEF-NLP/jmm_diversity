@@ -26,7 +26,10 @@ class LangDive:
         
     def __get_dataset(self, path):
         if path not in self.__processed_datasets: 
-            return pd.read_csv(path, sep = '\t')
+            if path[-3] =='c': #checking if tsv or csv
+                return pd.read_csv(path)
+            else:
+                return pd.read_csv(path, sep = '\t')
         else:
             path = path.lower()
             path = f"data/{path}.10000.stats.tsv"            
