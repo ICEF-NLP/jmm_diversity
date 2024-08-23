@@ -14,21 +14,20 @@ from .polyglot_tokenizer import Text
 from segments import Tokenizer
 
 
-def process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, output_dir = "default", start_sample_size = 10000, end_sample_size = 10000, step_size = 1):
+def process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, output_dir = "default", sample_size_array = [10000]):
 
     input_corpus = path_to_input_corpus_folder.split('/')[-1]
     print(f"Processing {input_corpus} corpus") #Information print
     
     output_dir = set_output_dir(output_dir, input_corpus)
     
-    headers = ["File", "Avg_length", "Median_length", "Char_types", "Types", "Tokens", "TTR", "H", "ISO_6393"]
-
-    for sample_size in range(start_sample_size, end_sample_size + step_size, step_size):
+    for sample_size in sample_size_array:
         output_file = os.path.join(output_dir, f"{input_corpus}.{sample_size}.stats.tsv").replace("\\","/")
-        with open(output_file, "w") as f:
-            f.write("\t".join(headers) + "\n")
+        
+        if os.path.isfile(output_file):
+            os.remove(output_file)
 
-        for filename in os.listdir(path_to_input_corpus_folder):
+        for filename in sorted(os.listdir(path_to_input_corpus_folder)):
             filepath = os.path.join(path_to_input_corpus_folder, filename).replace("\\","/")
             print(f"Processing {filename}") #Information print
             process_file(file_path= filepath, is_ISO6393 = is_ISO6393, output_file = output_file, sample_size=sample_size)
@@ -45,7 +44,7 @@ def set_output_dir(output_dir, input_corpus):
     return output_dir
 
 def process_file(file_path,  is_ISO6393, output_file, sample_size=10000) :
-    filename = file_path.split("/")[-1]
+    filename = file_path.replace("\\","/").split("/")[-1]
     ISO_6393 = ""
     if is_ISO6393:
         ISO_6393 = filename.split(".")[0].lower()
@@ -76,11 +75,11 @@ def process_file(file_path,  is_ISO6393, output_file, sample_size=10000) :
     median = statistics.median(sizes)
 
     index = output_file.rfind("/")
-    output_dir = output_file[:index] + '/freqs/'
+    output_dir = output_file[:index] + '/freqs_' + str(sample_size) + '/'
     entropy = get_measures(words, output_dir=output_dir, filename= filename + ".freqs.tsv")
     
     if not os.path.isfile(output_file):
-        with open(output_file, 'a') as f:
+        with open(output_file, 'w') as f:
             headers = ["File", "Avg_length", "Median_length", "Char_types", "Types", "Tokens", "TTR", "H", "ISO_6393"]
             f.write("\t".join(headers) + "\n")
 

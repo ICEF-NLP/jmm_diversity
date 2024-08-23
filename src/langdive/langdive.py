@@ -25,17 +25,18 @@ class LangDive:
 
         
     def __get_dataset(self, path):
-        if path not in self.__processed_datasets: 
+        path = path.replace("\\", "/")
+        if path.lower() in self.__processed_datasets: 
+            path = f"data/{path.lower()}.10000.stats.tsv"            
+            current_dir = os.path.dirname(__file__)
+            path = os.path.join(current_dir,path)
+            return pd.read_csv(path, sep = '\t')
+        else:
             if path[-3] =='c': #checking if tsv or csv
                 return pd.read_csv(path)
             else:
                 return pd.read_csv(path, sep = '\t')
-        else:
-            path = path.lower()
-            path = f"data/{path}.10000.stats.tsv"            
-            current_dir = os.path.dirname(__file__)
-            path = os.path.join(current_dir,path)
-            return pd.read_csv(path, sep = '\t')
+            
 
     def jaccard_syntax(self, dataset_path, reference_path, plot = True, scaled = False):    
         dataset_codes = self.__get_dataset(dataset_path)
@@ -84,14 +85,14 @@ class LangDive:
         features_frame = self.get_l2v(dataset_codes)
         entropies = self.__get_entropy(features_frame)
         typ_ind = mean(entropies)
-        return typ_ind
+        return float(typ_ind)
 
     def typological_index_word_length(self, dataset_path):
         dataset = self.__get_dataset(dataset_path)
         word_length_features = self.__get_wordlength_vectors(dataset)
         entropies = self.__get_entropy(word_length_features)
         typ_ind = mean(entropies)
-        return typ_ind
+        return float(typ_ind)
 
     def __get_wordlength_vectors(self, dataset):
         bins = np.arange(1, 11.2, self.__typ_ind_binsize) #[ 1. ,  1.1,  1.2,  1.3... ]
@@ -277,5 +278,3 @@ class LangDive:
                 else:
                     data_regions= pd.concat([data_regions, aux], axis=0)
         return (data_regions, data_regions_freq)
-    
-
