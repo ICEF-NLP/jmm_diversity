@@ -1,3 +1,4 @@
+
 # LangDive
 
 LangDive is a PyPi-hosted library for measuring the level of linguistic diversity in multilingual NLP datasets.
@@ -89,34 +90,36 @@ Finally, the Jaccard similarity index is calculated by comparing the distributio
 #### process_corpus
 
 ```
-process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, output_dir = "default", start_sample_size = 10000, end_sample_size = 10000, step_size = 1)
+process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, output_dir = "default", sample_size_array = [10000])
 ```
 Creates a results folder containing various measurements and statistics calculated based on the provided input corpus. The input corpus folder should contain textual files encoded in UTF-8. If the user wishes to utilize all functions of this library, it is necessary to ensure all corpus file names (without the file extension) are equal to their respective ISO-6393 language codes, and that the *is_ISO6393* argument is set to True. If these conditions are not met, only the measures based on mean word length can be used, while those relying on syntactic features will report an error.
 
-The created folder "RESULTS_corpus_folder_name" will be placed in chosen output directory with a subfolder "freqs" and one or more "corpus_folder_name.sample_size.stats.tsv" files. These files contain various measures for each corpus file, one line per file. Their number depends on the number of different sampling size settings, as defined by the final three function arguments. The "freqs" subfolder contains a word frequency count file for each file in the corpus folder, calculated using the final sampling size setting.
+The created folder "RESULTS_corpus_folder_name" will be placed in chosen output directory with one or more subfolders "freqs_sample_size" and one or more "corpus_folder_name.sample_size.stats.tsv" files. These files contain various measures for each corpus file, one line per file. Their number depends on the number of different sampling size settings, as defined by the final three function arguments. The "freqs_sample_size" subfolder contains a word frequency count file for each file in the corpus folder, calculated for every sample_size sampling setting.
 
 *```path_to_input_corpus_folder```* - absolute or relative path to the input corpus folder
 
-*```output_dir```* - absolute or relative path to the output folder. The default setting will place the outputs in the current working directory.
-
 *```is_ISO6393```* - boolean indicating whether the names of the input corpus files (without the file extension) correspond to the ISO-6393 language code standard
 
-*```start_sample_size, end_sample_size, step_size```* - defines the size of the text sample to be taken from each language file, measured in tokens. Each sample represents a contiguous section of text, with a randomly chosen starting point, containing the selected number of tokens. For example, for values 10000, 30000, 10000, there will be 3 result sets: one using samples of 10000 tokens per corpus file, one using samples of 20000 tokens per corpus file, and one using samples of 30000 tokens per corpus file.
+*```output_dir```* - absolute or relative path to the output folder. The default setting will place the outputs in the current working directory.
+
+*```sample_size_array```* - defines the size of the text sample to be taken from each language file, measured in tokens. Each sample represents a contiguous section of text, with a randomly chosen starting point, containing the selected number of tokens. 
+For example for sample_size_array = [10000, 50000, 20000], there will be 3 result sets: one using samples of 10000 tokens per corpus file, one using samples of 50000 tokens per corpus file, and one using samples of 20000 tokens per corpus file.
 
 #### process_file
 
 ```
-process_file(file_path, sample_size, output_file, is_ISO6393)
+process_file(file_path, is_ISO6393, output_file, sample_size=10000)
 ```
 Does the same thing as process_corpus but for a single file.
 
 *```file_path```* - absolute or relative path to the input corpus file
 
-*```sample_size```* - the size of the text sample to be taken, measured in tokens
+*```is_ISO6393```* - boolean indicating whether the name of the input corpus file (without the file extension) corresponds to the ISO6393 language code standard
 
 *```output_file```* - absolute or relative path to the output file where the results will be stored; the freq folder will be placed in the same directory as the output file
 
-*```is_ISO6393```* - boolean indicating whether the name of the input corpus file (without the file extension) corresponds to the ISO6393 language code standard
+*```sample_size```* - the size of the text sample to be taken, measured in tokens
+
 
 ### LangDive
 
@@ -165,7 +168,7 @@ typological_index_syntactic_features(dataset_path)
 
 Returns the typological index that uses the 103 syntactic features from lang2vec. The value ranges from 0 to 1 and values closer to 1 indicate higher diversity.
 
-*```dataset_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its ```library_id```.
+*```dataset_path```* - absolute or relative path to the processed corpus TSV file. One of the included datasets that has already been processed can be used by stating its `library_id`. Datasets not processed by this library can be used here as long as they contain a valid `ISO_6393` column and are in the .tsv or .csv files
 
 #### typological_index_word_length
 
@@ -180,22 +183,22 @@ Returns the typological index adapted to use mean word length for calculations.
 #### get_l2v
 
 ```
-get_l2v(dataset_codes)
+get_l2v(dataset_df)
 ```
 
 Returns the values of 103 syntactic features from lang2vec for the given set of languages.
 
-*```dataset_codes```* - absolute or relative path to the processed corpus TSV file, containing the ISO-6393 language codes for each corpus file. If these codes were not created within the process_corpus/process_file functions, an error will be generated.
+*```dataset_df```* - Pandas dataframe containing a `ISO_6393` column.
 
 #### get_dict
 
 ```
-get_dict(sourcedata)
+get_dict(dataset_df)
 ```
 
 Returns a pair of values dataframe with bins and a dictionary(region:number of languages) based on the sourcedata
 
-*```sourcedata```* - pandas dataframe of the processed dataset
+*```dataset_df```* - pandas dataframe of the processed dataset
 
 ## Acknowledgements
 

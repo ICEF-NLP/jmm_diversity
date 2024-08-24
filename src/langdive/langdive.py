@@ -108,13 +108,13 @@ class LangDive:
         
         return(pd.DataFrame.from_dict(vectors_hash).transpose())
     
-    def get_l2v(self, dataset_codes):
+    def get_l2v(self, dataset_df):
         #list of iso codes to query the l2v vectors:
-        has_nan = dataset_codes['ISO_6393'].isna().any()
+        has_nan = dataset_df['ISO_6393'].isna().any()
         if has_nan:
             raise ValueError("The ISO_6393 column contains NaN values")
 
-        codes = dataset_codes["ISO_6393"].str.lower().tolist()  
+        codes = dataset_df["ISO_6393"].str.lower().tolist()  
         features = l2v.get_features(codes, "syntax_knn")
         features_frame = pd.DataFrame.from_dict(features).transpose()
         return (features_frame)
@@ -263,12 +263,12 @@ class LangDive:
                 scaled[key] = dataset_freq[key] * c 
             return (scaled,dataset_freq)
     
-    def get_dict(self, sourcedata):
+    def get_dict(self, dataset_df):
         bins = np.arange(self.__min, self.__max, self.__increment)
         data_regions = pd.DataFrame(columns=['File','Avg_length', 'Median_length', 'Char_types', 'Types','Tokens','TTR','H','ISO_6393','region'])
         data_regions_freq = dict()
         for i in bins:
-            aux = pd.DataFrame(sourcedata.loc[(sourcedata['Avg_length']>=i) & (sourcedata['Avg_length']<(i+self.__increment))])
+            aux = pd.DataFrame(dataset_df.loc[(dataset_df['Avg_length']>=i) & (dataset_df['Avg_length']<(i+self.__increment))])
             region = str(i) + "-" + str(i + self.__increment)
             data_regions_freq[region] = len(aux)
             aux['region'] = region   
