@@ -14,25 +14,25 @@ from .polyglot_tokenizer import Text
 from segments import Tokenizer
 
 
-def process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, output_dir = "default", sample_size_array = [10000]):
+def process_corpus(input_folder_path, is_ISO6393 = False, output_folder_path = "default", sample_size_array = [10000]):
 
-    input_corpus = path_to_input_corpus_folder.split('/')[-1]
+    input_corpus = input_folder_path.split('/')[-1]
     print(f"Processing {input_corpus} corpus") #Information print
     
-    output_dir = set_output_dir(output_dir, input_corpus)
+    output_folder_path = set_output_dir(output_folder_path, input_corpus)
     
     for sample_size in sample_size_array:
-        output_file = os.path.join(output_dir, f"{input_corpus}.{sample_size}.stats.tsv").replace("\\","/")
+        output_file = os.path.join(output_folder_path, f"{input_corpus}.{sample_size}.stats.tsv").replace("\\","/")
         
         if os.path.isfile(output_file):
             os.remove(output_file)
 
-        for filename in sorted(os.listdir(path_to_input_corpus_folder)):
-            filepath = os.path.join(path_to_input_corpus_folder, filename).replace("\\","/")
+        for filename in sorted(os.listdir(input_folder_path)):
+            filepath = os.path.join(input_folder_path, filename).replace("\\","/")
             print(f"Processing {filename}") #Information print
-            process_file(file_path= filepath, is_ISO6393 = is_ISO6393, output_file = output_file, sample_size=sample_size)
+            process_file(input_file_path = filepath, is_ISO6393 = is_ISO6393, output_file_path = output_file, sample_size = sample_size)
 
-    print("DONE. See results in", output_dir)
+    print("DONE. See results in", output_folder_path)
 
 def set_output_dir(output_dir, input_corpus):
     if output_dir == "default":
@@ -43,13 +43,13 @@ def set_output_dir(output_dir, input_corpus):
     os.makedirs(output_dir, exist_ok=True) 
     return output_dir
 
-def process_file(file_path,  is_ISO6393, output_file, sample_size=10000) :
-    filename = file_path.replace("\\","/").split("/")[-1]
+def process_file(input_file_path, is_ISO6393, output_file_path, sample_size=10000) :
+    filename = input_file_path.replace("\\","/").split("/")[-1]
     ISO_6393 = ""
     if is_ISO6393:
         ISO_6393 = filename.split(".")[0].lower()
 
-    strings_clean = get_clean_strings(file_path, sample_size)
+    strings_clean = get_clean_strings(input_file_path, sample_size)
     words = Counter(strings_clean)
     types = len(set(strings_clean))
     tokens = len(strings_clean)
@@ -74,16 +74,16 @@ def process_file(file_path,  is_ISO6393, output_file, sample_size=10000) :
     char_types = len(char_freq)
     median = statistics.median(sizes)
 
-    index = output_file.rfind("/")
-    output_dir = output_file[:index] + '/freqs_' + str(sample_size) + '/'
+    index = output_file_path.rfind("/")
+    output_dir = output_file_path[:index] + '/freqs_' + str(sample_size) + '/'
     entropy = get_measures(words, output_dir=output_dir, filename= filename + ".freqs.tsv")
     
-    if not os.path.isfile(output_file):
-        with open(output_file, 'w') as f:
+    if not os.path.isfile(output_file_path):
+        with open(output_file_path, 'w') as f:
             headers = ["File", "Avg_length", "Median_length", "Char_types", "Types", "Tokens", "TTR", "H", "ISO_6393"]
             f.write("\t".join(headers) + "\n")
 
-    with open(output_file, 'a') as f:
+    with open(output_file_path, 'a') as f:
         f.write(str(filename) + "\t" + str(avg)+"\t"+str(median)+"\t"+str(char_types)+"\t"+str(types)+"\t"+str(tokens)+"\t"+str(ttr)+"\t"+str(entropy)+ "\t" + str(ISO_6393) +"\n")
 
 def get_clean_strings(file_path, sample_size):

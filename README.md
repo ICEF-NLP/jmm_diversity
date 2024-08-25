@@ -90,17 +90,17 @@ Finally, the Jaccard similarity index is calculated by comparing the distributio
 #### process_corpus
 
 ```
-process_corpus(path_to_input_corpus_folder, is_ISO6393 = False, output_dir = "default", sample_size_array = [10000])
+process_corpus(input_folder_path, is_ISO6393 = False, output_folder_path = "default", sample_size_array = [10000])
 ```
 Creates a results folder containing various measurements and statistics calculated based on the provided input corpus. The input corpus folder should contain textual files encoded in UTF-8. If the user wishes to utilize all functions of this library, it is necessary to ensure all corpus file names (without the file extension) are equal to their respective ISO-6393 language codes, and that the *is_ISO6393* argument is set to True. If these conditions are not met, only the measures based on mean word length can be used, while those relying on syntactic features will report an error.
 
 The created folder "RESULTS_corpus_folder_name" will be placed in the chosen output directory with one or more subfolders "freqs_sample_size" and one or more "corpus_folder_name.sample_size.stats.tsv" files. These files contain various measures for each corpus file, one line per file. Their number depends on the number of different sampling size settings, as defined by the *sample_size_array* function arguments. The "freqs_sample_size" subfolders contain word frequency count files for each file in the corpus folder, calculated for every sampling size setting.
 
-*```path_to_input_corpus_folder```* - absolute or relative path to the input corpus folder
+*```input_folder_path```* - absolute or relative path to the input corpus folder
 
 *```is_ISO6393```* - boolean indicating whether the names of the input corpus files (without the file extension) correspond to the ISO-6393 language code standard
 
-*```output_dir```* - absolute or relative path to the output folder. The default setting will place the outputs in the current working directory.
+*```output_folder_path```* - absolute or relative path to the output folder. The default setting will place the outputs in the current working directory.
 
 *```sample_size_array```* - the size of the text sample to be taken from each language file, measured in tokens. Each sample represents a contiguous section of text, with a randomly chosen starting point, containing the selected number of tokens. 
 For example, for sample_size_array = [10000, 20000], there will be 2 result sets: one using samples of 10000 tokens per corpus file, and another using samples of 20000 tokens per corpus file.
@@ -108,15 +108,15 @@ For example, for sample_size_array = [10000, 20000], there will be 2 result sets
 #### process_file
 
 ```
-process_file(file_path, is_ISO6393, output_file, sample_size=10000)
+process_file(input_file_path, is_ISO6393, output_file_path, sample_size=10000)
 ```
 Does the same thing as process_corpus but for a single file.
 
-*```file_path```* - absolute or relative path to the input corpus file
+*```input_file_path```* - absolute or relative path to the input corpus file
 
 *```is_ISO6393```* - boolean indicating whether the name of the input corpus file (without the file extension) corresponds to the ISO6393 language code standard
 
-*```output_file```* - absolute or relative path to the output file where the results will be stored; the freq folder will be placed in the same directory as the output file
+*```output_file_path```* - absolute or relative path to the output file where the results will be stored; the freq folder will be placed in the same directory as the output file
 
 *```sample_size```* - the size of the text sample to be taken, measured in tokens
 
