@@ -208,7 +208,7 @@ This library has been developed and is maintained by the following members of th
 - [Aleksandra Todorović](mailto:aleksandra.todorovic@ic.etf.bg.ac.rs)
 - [dr Vuk Batanović](mailto:vuk.batanovic@ic.etf.bg.ac.rs)
 
-This effort was made possible thanks to collaboration and consultations with [dr Tanja Samaržić](mailto:tanja.samardzic@uzh.ch), University of Zurich.
+This effort was made possible thanks to collaboration and consultations with [dr Tanja Samardžić](mailto:tanja.samardzic@uzh.ch), University of Zurich.
 
 ## License
 
