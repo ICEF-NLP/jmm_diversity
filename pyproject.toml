@@ -13,9 +13,7 @@ where = ["src"]
 name = "langdive"
 version = "1.0"
 authors = [
-  { name="Aleksandra Todorović", email="aleksandra.todorovic@ic.etf.bg.ac.rs" },
-  { name="Vuk Batanović", email="vuk.batanovic@ic.etf.bg.ac.rs" },
-  { name="Tanja Samardžić", email="tanja.samardzic@uzh.ch" },
+  { name="Natural Language Processing group at the Innovation Center of the School of Electrical Engineering in Belgrade", email="vuk.batanovic@ic.etf.bg.ac.rs" },
 ]
 description = "LangDive is a library for measuring the level of linguistic diversity in multilingual NLP datasets"
 readme = "README.md"

@@ -1,4 +1,3 @@
-
 # LangDive
 
 LangDive is a PyPi-hosted library for measuring the level of linguistic diversity in multilingual NLP datasets.
@@ -203,6 +202,13 @@ Returns a dataframe containing pairs of bins and dictionaries (region:number of 
 ## Acknowledgements
 
  - [Polyglot](https://github.com/aboSamoor/polyglot) - A part of the *langdive* library (the polyglot_tokenizer file) has been taken from the Polyglot project. The reason for this is difficulty with installation on Windows and MacOS. If the library gets updated, this file will be removed.
+
+## Authors and maintainers
+This library has been developed and is maintained by the following members of the Natural Language Processing group at the [Innovation Center of the School of Electrical Engineering in Belgrade](https://www.ic.etf.bg.ac.rs/):
+- [Aleksandra Todorović](mailto:aleksandra.todorovic@ic.etf.bg.ac.rs)
+- [dr Vuk Batanović](mailto:vuk.batanovic@ic.etf.bg.ac.rs)
+
+This effort was made possible thanks to collaboration and consultations with [dr Tanja Samaržić](mailto:tanja.samardzic@uzh.ch), University of Zurich.
 
 ## License
 
